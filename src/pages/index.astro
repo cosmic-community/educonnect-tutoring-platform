@@ -1,0 +1,183 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import TutorCard from '../components/TutorCard.astro';
+import SubjectCard from '../components/SubjectCard.astro';
+import TestimonialCard from '../components/TestimonialCard.astro';
+import CosmicBadge from '../components/CosmicBadge.astro';
+import { getTutors, getPopularSubjects, getFeaturedTestimonials, getPaymentMethods } from '../lib/cosmic';
+
+const tutors = await getTutors();
+const popularSubjects = await getPopularSubjects();
+const featuredTestimonials = await getFeaturedTestimonials();
+const paymentMethods = await getPaymentMethods();
+
+// Get bucket slug for the badge
+const bucketSlug = import.meta.env.COSMIC_BUCKET_SLUG;
+---
+
+<Layout title="EduConnect - Professional Online Tutoring Services">
+  <Header />
+  
+  <!-- Hero Section -->
+  <section class="bg-gradient-to-br from-primary-50 to-primary-100 py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center">
+        <h1 class="text-4xl md:text-6xl font-bold text-secondary-900 mb-6">
+          Expert Tutoring for 
+          <span class="text-primary-600">Every Subject</span>
+        </h1>
+        <p class="text-xl text-secondary-700 mb-8 max-w-3xl mx-auto">
+          Connect with qualified tutors and transform your learning experience. 
+          Personalized lessons, flexible scheduling, and proven results.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href="/tutors" class="bg-primary-600 hover:bg-primary-700 text-white px-8 py-4 rounded-lg text-lg font-medium transition-colors">
+            Find a Tutor
+          </a>
+          <a href="/subjects" class="bg-white hover:bg-secondary-50 text-secondary-900 border border-secondary-300 px-8 py-4 rounded-lg text-lg font-medium transition-colors">
+            Browse Subjects
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Popular Subjects Section -->
+  {popularSubjects.length > 0 && (
+    <section class="py-16 bg-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl font-bold text-secondary-900 mb-4">Popular Subjects</h2>
+          <p class="text-xl text-secondary-600">
+            Explore our most requested tutoring subjects
+          </p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {popularSubjects.slice(0, 6).map((subject) => (
+            <SubjectCard subject={subject} />
+          ))}
+        </div>
+        <div class="text-center mt-12">
+          <a href="/subjects" class="bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg text-lg font-medium transition-colors">
+            View All Subjects
+          </a>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Featured Tutors Section -->
+  {tutors.length > 0 && (
+    <section class="py-16 bg-secondary-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl font-bold text-secondary-900 mb-4">Meet Our Expert Tutors</h2>
+          <p class="text-xl text-secondary-600">
+            Qualified professionals dedicated to your success
+          </p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {tutors.slice(0, 3).map((tutor) => (
+            <TutorCard tutor={tutor} />
+          ))}
+        </div>
+        <div class="text-center mt-12">
+          <a href="/tutors" class="bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg text-lg font-medium transition-colors">
+            View All Tutors
+          </a>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Testimonials Section -->
+  {featuredTestimonials.length > 0 && (
+    <section class="py-16 bg-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl font-bold text-secondary-900 mb-4">Student Success Stories</h2>
+          <p class="text-xl text-secondary-600">
+            Hear from our happy and successful students
+          </p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {featuredTestimonials.slice(0, 3).map((testimonial) => (
+            <TestimonialCard testimonial={testimonial} />
+          ))}
+        </div>
+        <div class="text-center mt-12">
+          <a href="/testimonials" class="bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg text-lg font-medium transition-colors">
+            Read More Reviews
+          </a>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Payment Methods Section -->
+  {paymentMethods.length > 0 && (
+    <section class="py-16 bg-secondary-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl font-bold text-secondary-900 mb-4">Flexible Payment Options</h2>
+          <p class="text-xl text-secondary-600">
+            Choose the payment method that works best for you
+          </p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {paymentMethods.filter(method => method.metadata?.is_available).map((method) => (
+            <div class="bg-white rounded-xl shadow-sm border border-secondary-200 p-6 text-center">
+              {method.metadata?.payment_icon && (
+                <img 
+                  src={`${method.metadata.payment_icon.imgix_url}?w=100&h=100&fit=crop&auto=format,compress`}
+                  alt={method.metadata?.method_name || method.title}
+                  class="w-16 h-16 object-cover rounded-lg mx-auto mb-4"
+                  width="64"
+                  height="64"
+                />
+              )}
+              <h3 class="text-lg font-semibold text-secondary-900 mb-2">
+                {method.metadata?.method_name || method.title}
+              </h3>
+              {method.metadata?.description && (
+                <p class="text-secondary-600 text-sm mb-4">
+                  {method.metadata.description}
+                </p>
+              )}
+              <div class="flex justify-between items-center text-sm">
+                {method.metadata?.processing_fee !== undefined && (
+                  <span class="text-secondary-600">
+                    Fee: {method.metadata.processing_fee}%
+                  </span>
+                )}
+                {method.metadata?.processing_time && (
+                  <span class="text-green-600 font-medium">
+                    {method.metadata.processing_time}
+                  </span>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- CTA Section -->
+  <section class="py-16 bg-primary-600">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-3xl font-bold text-white mb-4">Ready to Start Learning?</h2>
+      <p class="text-xl text-primary-100 mb-8 max-w-2xl mx-auto">
+        Join thousands of successful students who have improved their grades with our expert tutors.
+      </p>
+      <a href="/contact" class="bg-white hover:bg-secondary-50 text-primary-600 px-8 py-4 rounded-lg text-lg font-medium transition-colors">
+        Get Started Today
+      </a>
+    </div>
+  </section>
+
+  <Footer />
+  <CosmicBadge bucketSlug={bucketSlug} />
+</Layout>

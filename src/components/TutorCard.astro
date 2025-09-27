@@ -1,0 +1,129 @@
+---
+import type { Tutor } from '../types';
+
+export interface Props {
+  tutor: Tutor;
+}
+
+const { tutor } = Astro.props;
+
+const renderStars = (rating: number) => {
+  return Array.from({ length: 5 }, (_, index) => {
+    const filled = index < rating ? 'text-yellow-400' : 'text-secondary-300';
+    return { filled, index };
+  });
+};
+
+// Calculate average rating based on experience (simplified)
+const avgRating = Math.min(5, Math.floor((tutor.metadata?.experience_years || 1) / 2) + 3);
+---
+
+<div class="bg-white rounded-xl shadow-sm border border-secondary-200 hover:shadow-md transition-all duration-300 overflow-hidden">
+  <!-- Profile Photo -->
+  {tutor.metadata?.profile_photo && (
+    <div class="aspect-w-16 aspect-h-9 bg-secondary-100">
+      <img 
+        src={`${tutor.metadata.profile_photo.imgix_url}?w=400&h=300&fit=crop&auto=format,compress`}
+        alt={tutor.metadata?.full_name || tutor.title}
+        class="w-full h-48 object-cover"
+        width="400"
+        height="300"
+      />
+    </div>
+  )}
+
+  <div class="p-6">
+    <!-- Tutor Name and Rating -->
+    <div class="flex justify-between items-start mb-3">
+      <h3 class="text-lg font-semibold text-secondary-900">
+        {tutor.metadata?.full_name || tutor.title}
+      </h3>
+      <div class="flex items-center">
+        {renderStars(avgRating).map(({ filled, index }) => (
+          <svg
+            key={index}
+            class={`w-4 h-4 ${filled}`}
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        ))}
+        <span class="ml-1 text-sm text-secondary-600">{avgRating}.0</span>
+      </div>
+    </div>
+
+    <!-- Bio -->
+    {tutor.metadata?.bio && (
+      <p class="text-secondary-600 text-sm mb-4 line-clamp-3">
+        {tutor.metadata.bio}
+      </p>
+    )}
+
+    <!-- Experience and Rate -->
+    <div class="flex justify-between items-center mb-4">
+      {tutor.metadata?.experience_years && (
+        <span class="text-sm text-secondary-500">
+          {tutor.metadata.experience_years} years exp.
+        </span>
+      )}
+      {tutor.metadata?.hourly_rate && (
+        <span class="text-lg font-semibold text-primary-600">
+          ${tutor.metadata.hourly_rate}/hr
+        </span>
+      )}
+    </div>
+
+    <!-- Subjects -->
+    {tutor.metadata?.subjects && tutor.metadata.subjects.length > 0 && (
+      <div class="mb-4">
+        <div class="flex flex-wrap gap-2">
+          {tutor.metadata.subjects.slice(0, 3).map((subject) => (
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-100 text-primary-800">
+              {subject.metadata?.subject_name || subject.title}
+            </span>
+          ))}
+          {tutor.metadata.subjects.length > 3 && (
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-secondary-100 text-secondary-800">
+              +{tutor.metadata.subjects.length - 3} more
+            </span>
+          )}
+        </div>
+      </div>
+    )}
+
+    <!-- Availability Status -->
+    {tutor.metadata?.availability_status && (
+      <div class="mb-4">
+        <span class={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+          tutor.metadata.availability_status.key === 'available' 
+            ? 'bg-green-100 text-green-800' 
+            : tutor.metadata.availability_status.key === 'busy'
+            ? 'bg-yellow-100 text-yellow-800'
+            : 'bg-red-100 text-red-800'
+        }`}>
+          <span class={`w-2 h-2 rounded-full mr-1 ${
+            tutor.metadata.availability_status.key === 'available' 
+              ? 'bg-green-400' 
+              : tutor.metadata.availability_status.key === 'busy'
+              ? 'bg-yellow-400'
+              : 'bg-red-400'
+          }`}></span>
+          {tutor.metadata.availability_status.value}
+        </span>
+      </div>
+    )}
+
+    <!-- View Profile Button -->
+    <a 
+      href={`/tutors/${tutor.slug}`}
+      class="w-full bg-primary-600 hover:bg-primary-700 text-white text-center py-2 px-4 rounded-lg text-sm font-medium transition-colors inline-block"
+    >
+      View Profile
+    </a>
+  </div>
+</div>
