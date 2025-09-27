@@ -23,7 +23,6 @@ const ratingNumber = testimonial.metadata?.rating ? parseInt(testimonial.metadat
   <div class="flex text-yellow-400 mb-4">
     {renderStars(ratingNumber).map(({ filled, index }) => (
       <svg
-        key={index}
         class={`w-5 h-5 ${filled}`}
         fill="currentColor"
         viewBox="0 0 20 20"

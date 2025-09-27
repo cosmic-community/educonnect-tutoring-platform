@@ -41,7 +41,6 @@ const avgRating = Math.min(5, Math.floor((tutor.metadata?.experience_years || 1)
       <div class="flex items-center">
         {renderStars(avgRating).map(({ filled, index }) => (
           <svg
-            key={index}
             class={`w-4 h-4 ${filled}`}
             fill="currentColor"
             viewBox="0 0 20 20"

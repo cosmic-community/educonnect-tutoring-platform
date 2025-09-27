@@ -1,6 +1,5 @@
 import { createBucketClient } from '@cosmicjs/sdk';
 import type { 
-  CosmicResponse, 
   Tutor, 
   Subject, 
   Testimonial, 
