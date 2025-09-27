@@ -2,49 +2,39 @@
 export interface Props {
   title: string;
   description?: string;
-  image?: string;
 }
 
-const { 
-  title = 'EduConnect Tutoring Platform',
-  description = 'Professional online tutoring services with expert tutors in Mathematics, Physics, English Literature, and Computer Programming.',
-  image = 'https://imgix.cosmicjs.com/eddf5450-a044-11ed-81f2-f50e185dd248-rAHEjUB-L6c.jpg?w=1200&h=630&fit=crop&auto=format,compress'
-} = Astro.props;
+const { title, description = "Professional online tutoring services for all subjects. Expert tutors, flexible scheduling, and proven results." } = Astro.props;
 ---
 
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en" class="h-full">
   <head>
     <meta charset="UTF-8" />
     <meta name="description" content={description} />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
-    <title>{title}</title>
     
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content={Astro.url} />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:image" content={image} />
-
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content={Astro.url} />
-    <meta property="twitter:title" content={title} />
-    <meta property="twitter:description" content={description} />
-    <meta property="twitter:image" content={image} />
+    <!-- Inter font from Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Meta tags for SEO -->
+    <meta property="og:title" content={title}>
+    <meta property="og:description" content={description}>
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content={title}>
+    <meta name="twitter:description" content={description}>
+    
+    <title>{title}</title>
+  </head>
+  <body class="h-full bg-white">
+    <slot />
     
     <!-- Console capture script for dashboard debugging -->
     <script src="/dashboard-console-capture.js" is:inline></script>
-    
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  </head>
-  <body class="font-sans bg-white text-secondary-900">
-    <slot />
   </body>
 </html>
